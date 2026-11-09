@@ -1,0 +1,154 @@
+SQL*Plus: Release 11.2.0.1.0 Production on Tue Aug 11 02:31:35 2026
+
+Copyright (c) 1982, 2010, Oracle.  All rights reserved.
+
+Enter user-name: A008@db2021
+Enter password:
+
+Connected to:
+Oracle Database 11g Release 11.2.0.1.0 - Production
+SQL> CREATE TABLE STUDENT35(
+  2  STUDENT_ID NUMBER(5) PRIMARY KEY,
+  3  STUDENT_NAME VARCHAR2(30),
+  4  DEPARTMENT VARCHAR2(20),
+  5  MARKS NUMBER(3)
+  6  );
+
+Table created.
+SQL> insert into student35 values (101,'dhana','cse',85);
+
+1 row created.
+SQL> insert into student35 values (102,'bhuvana','ece',78);
+
+1 row created.
+SQL> insert into student35 values (103,'jhansi','it',92);
+
+1 row created.
+
+SQL> insert into student35 values (104,'varshini','cse',88);
+
+1 row created.
+
+SQL> select * from student35;
+
+STUDENT_ID STUDENT_NAME                   DEPARTMENT                MARKS
+---------- ------------------------------ -------------------- ----------
+       101 dhana                          cse                          85
+       102 bhuvana                        ece                          78
+       103 jhansi                         it                           92
+       104 varshini                       cse                          88
+
+SQL> CREATE TABLE ALUMNI1
+  2  (
+  3  STUDENT_NAME VARCHAR2(30)
+  4  );
+
+Table created.
+
+SQL> INSERT INTO ALUMNI1 VALUES ('ARUN');
+
+1 row created.
+
+SQL> INSERT INTO ALUMNI1 VALUES ('RAVI');
+
+1 row created.
+
+SQL> INSERT INTO ALUMNI1 VALUES ('KAVI');
+
+1 row created.
+
+SQL> select * from student35 where department in ('cse','it');
+
+STUDENT_ID STUDENT_NAME                   DEPARTMENT                MARKS
+---------- ------------------------------ -------------------- ----------
+       101 dhana                          cse                          85
+       103 jhansi                         it                           92
+       104 varshini                       cse                          88
+SQL> select * from student35
+  2  where marks > any
+  3  (
+  4  select marks
+  5  from student35
+  6  where department = 'ece'
+  7  );
+
+STUDENT_ID STUDENT_NAME                   DEPARTMENT                MARKS
+---------- ------------------------------ -------------------- ----------
+       103 jhansi                         it                           92
+       104 varshini                       cse                          88
+       101 dhana                          cse                          85
+
+SQL> select * from student35
+  2  where marks > all
+  3  (
+  4  select marks
+  5  from student35
+  6  where department = 'ece'
+  7  );
+
+STUDENT_ID STUDENT_NAME                   DEPARTMENT                MARKS
+---------- ------------------------------ -------------------- ----------
+       101 dhana                          cse                          85
+       104 varshini                       cse                          88
+       103 jhansi                         it                           92
+
+SQL> SELECT STUDENT_NAME
+  2  FROM STUDENT35 S
+  3  WHERE NOT EXISTS
+  4  (
+  5  SELECT *
+  6  FROM ALUMNI1 A
+  7  WHERE A.STUDENT_NAME = S.STUDENT_NAME
+  8  );
+
+STUDENT_NAME
+------------------------------
+dhana
+jhansi
+varshini
+bhuvana
+
+SQL> SELECT STUDENT_NAME FROM STUDENT35
+  2  UNION
+  3  SELECT STUDENT_NAME FROM ALUMNI1;
+
+STUDENT_NAME
+------------------------------
+ARUN
+KAVI
+RAVI
+bhuvana
+dhana
+jhansi
+varshini
+
+7 rows selected.
+
+SQL> SELECT STUDENT_NAME FROM STUDENT35
+  2  INTERSECT
+  3  SELECT STUDENT_NAME FROM ALUMNI1;
+
+no rows selected
+
+SQL> INSERT INTO STUDENT35 VALUES (101,'SURESH','EEE',80);
+INSERT INTO STUDENT35 VALUES (101,'SURESH','EEE',80)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (A033.SYS_C0033824) violated
+
+
+SQL> INSERT INTO STUDENT35 VALUES (NULL,'MANOJ','CSE',75);
+INSERT INTO STUDENT35 VALUES (NULL,'MANOJ','CSE',75)
+                              *
+ERROR at line 1:
+ORA-01400: cannot insert NULL into ("A033"."STUDENT35"."STUDENT_ID")
+
+
+SQL> select * from student35;
+
+STUDENT_ID STUDENT_NAME                   DEPARTMENT                MARKS
+---------- ------------------------------ -------------------- ----------
+       101 dhana                          cse                          85
+       102 bhuvana                        ece                          78
+       103 jhansi                         it                           92
+       104 varshini                       cse   
